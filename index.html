@@ -1,77 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>지구사랑음악</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-    margin:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    background:#111;
-    font-family:sans-serif;
-    color:white;
-    flex-direction:column;
-}
+    <title>랜덤 공연 포스터</title>
 
-img{
-    max-width:90%;
-    max-height:75vh;
-    border-radius:12px;
-    box-shadow:0 0 20px rgba(0,0,0,.5);
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-button{
-    margin-top:20px;
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    background:#2ecc71;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
 
-button:hover{
-    background:#27ae60;
-}
-</style>
+        #posterLink {
+            display: block;
+            line-height: 0;
+        }
+
+        #poster {
+            display: block;
+            max-width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>지구사랑음악</h1>
+    <!-- 포스터를 누르면 공연 정보 페이지로 이동 -->
+    <a id="posterLink" href="concert.html">
+        <img id="poster" alt="공연 포스터">
+    </a>
 
-<img id="poster" src="" alt="랜덤 포스터">
+    <script>
+        const posters = [
+            "poster1.png",
+            "poster2.png",
+            "poster3.png",
+            "poster4.png",
+            "poster5.png"
+        ];
 
-<button id="shuffle">다른 포스터 보기</button>
+        const randomIndex = Math.floor(Math.random() * posters.length);
+        const randomPoster = posters[randomIndex];
 
-<script>
-const posters = [
-  "poster1.png",
-  "poster2.png",
-  "poster3.png",
-  "poster4.png",
-  "poster5.png"
-];
-
-const img = document.getElementById("poster");
-const button = document.getElementById("shuffle");
-
-function showRandomPoster(){
-    const random = Math.floor(Math.random() * posters.length);
-    img.src = posters[random];
-}
-
-// 페이지 열릴 때 랜덤 1장
-showRandomPoster();
-
-// 버튼 누르면 또 랜덤
-button.addEventListener("click", showRandomPoster);
-</script>
+        document.getElementById("poster").src = randomPoster;
+    </script>
 
 </body>
 </html>
