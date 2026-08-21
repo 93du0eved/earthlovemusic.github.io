@@ -11,23 +11,26 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             margin: 0;
             width: 100%;
             min-height: 100%;
         }
 
         body {
+            min-height: 100vh;
+            overflow-x: hidden;
             background-color: #fff;
-            color: #000;
+            color: #111;
             font-family: Arial, sans-serif;
         }
 
-        /* 처음 나타나는 인트로 */
+        /* 처음 나타나는 화면 */
         #intro {
             position: fixed;
             inset: 0;
-            z-index: 100;
+            z-index: 1000;
 
             display: flex;
             justify-content: center;
@@ -58,60 +61,56 @@
             min-height: 100vh;
 
             opacity: 0;
-            transition: opacity 2.5s ease;
+            transition: opacity 2s ease;
         }
 
         #posterPage.show {
             opacity: 1;
         }
 
-        /* 제목 영역 */
+        /* 상단 제목 */
         .poster-header {
-            width: 100%;
-            padding: 35px 20px 20px;
-
-            background-color: #fff;
+            padding: 40px 20px 24px;
             text-align: center;
         }
 
         .poster-header h1 {
             margin: 0;
 
-            color: #000;
-            font-size: clamp(27px, 8vw, 48px);
-            font-weight: 800;
-            letter-spacing: -2px;
+            color: #111;
+            font-size: clamp(34px, 9vw, 60px);
+            font-weight: 900;
+            letter-spacing: -3px;
         }
 
-        /* 클릭 안내 문구 */
         .click-message {
-            margin: 12px 0 0;
+            margin: 13px 0 0;
 
-            color: #222;
-            font-size: clamp(15px, 4vw, 20px);
+            color: #111;
+            font-size: clamp(14px, 4vw, 18px);
             font-weight: 500;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
 
-            animation: messageBlink 1.4s ease-in-out infinite;
+            animation: messageMove 1.3s ease-in-out infinite;
         }
 
-        @keyframes messageBlink {
-            0%, 100% {
-                opacity: 0.45;
+        @keyframes messageMove {
+            0%,
+            100% {
+                opacity: 0.4;
                 transform: translateY(0);
             }
 
             50% {
                 opacity: 1;
-                transform: translateY(3px);
+                transform: translateY(4px);
             }
         }
 
-        /* 포스터 영역 */
+        /* 포스터 */
         .poster-area {
             width: 100%;
-            padding: 0 16px 35px;
-            background-color: #fff;
+            padding: 0 16px 50px;
         }
 
         #posterLink {
@@ -126,36 +125,29 @@
             display: block;
             width: 100%;
             height: auto;
-            cursor: pointer;
 
+            cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 클릭했을 때 나타나는 이모지 */
-        .click-emoji {
+        /* 터치 위치에 나타나는 이모지 */
+        .touch-emoji {
             position: fixed;
-            z-index: 200;
+            z-index: 1500;
 
-            font-size: 30px;
+            font-size: 27px;
             line-height: 1;
 
             pointer-events: none;
             user-select: none;
 
-            animation: emojiPop 0.9s ease-out forwards;
+            animation: touchPop 0.85s ease-out forwards;
         }
 
-        @keyframes emojiPop {
+        @keyframes touchPop {
             0% {
                 opacity: 1;
-                transform:
-                    translate(-50%, -50%)
-                    scale(0.4)
-                    rotate(0deg);
-            }
-
-            60% {
-                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.4);
             }
 
             100% {
@@ -163,20 +155,61 @@
                 transform:
                     translate(
                         calc(-50% + var(--move-x)),
-                        calc(-50% + var(--move-y))
+                        calc(-50% - 70px)
                     )
-                    scale(1.6)
+                    scale(1.3)
                     rotate(var(--rotate));
+            }
+        }
+
+        /* 포스터 클릭 시 쏟아지는 이모지 */
+        #emojiRain {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+
+            display: none;
+            overflow: hidden;
+            pointer-events: none;
+
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        #emojiRain.show {
+            display: block;
+        }
+
+        .rain-emoji {
+            position: absolute;
+            top: -80px;
+
+            line-height: 1;
+
+            animation: emojiFall var(--fall-time) linear forwards;
+            animation-delay: var(--fall-delay);
+        }
+
+        @keyframes emojiFall {
+            from {
+                opacity: 1;
+                transform: translateY(-10vh) rotate(0deg);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                    translateY(120vh)
+                    rotate(var(--fall-rotate));
             }
         }
 
         @media (min-width: 700px) {
             #poster {
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.14);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             }
 
             .poster-header {
-                padding-top: 50px;
+                padding-top: 55px;
             }
         }
     </style>
@@ -184,10 +217,8 @@
 
 <body>
 
-    <!-- 처음 보이는 문구 -->
     <div id="intro">you found me!</div>
 
-    <!-- 인트로가 끝난 후 나타나는 페이지 -->
     <main id="posterPage">
 
         <header class="poster-header">
@@ -203,6 +234,8 @@
 
     </main>
 
+    <div id="emojiRain"></div>
+
     <script>
         const posters = [
             "poster1.png",
@@ -212,81 +245,129 @@
             "poster5.png"
         ];
 
-        const emojis = ["🌎", "🎵", "🩵"];
+        const emojis = ["🌎", "🩵", "🎵"];
+
+        const intro = document.getElementById("intro");
+        const posterPage = document.getElementById("posterPage");
+        const posterLink = document.getElementById("posterLink");
+        const poster = document.getElementById("poster");
+        const emojiRain = document.getElementById("emojiRain");
 
         const randomIndex =
             Math.floor(Math.random() * posters.length);
 
-        const intro =
-            document.getElementById("intro");
-
-        const posterPage =
-            document.getElementById("posterPage");
-
-        const posterLink =
-            document.getElementById("posterLink");
-
-        const poster =
-            document.getElementById("poster");
-
-        poster.src = posters[randomIndex];
-
-        /* 포스터 로딩 후 인트로 사라짐 */
-        poster.addEventListener("load", function () {
+        /* 포스터가 준비되면 인트로 종료 */
+        function showPosterPage() {
             setTimeout(function () {
                 intro.classList.add("hide");
                 posterPage.classList.add("show");
             }, 1500);
-        });
+        }
+
+        poster.addEventListener("load", showPosterPage);
 
         poster.addEventListener("error", function () {
             intro.classList.add("hide");
             posterPage.classList.add("show");
         });
 
-        /* 포스터 클릭 효과 */
-        posterLink.addEventListener("click", function (event) {
-            event.preventDefault();
+        poster.src = posters[randomIndex];
 
-            const destination = posterLink.href;
+        /* 터치 이모지 만들기 */
+        function createTouchEmoji(x, y) {
+            const emoji = document.createElement("span");
 
-            /* 클릭 위치 주변에 이모지 9개 생성 */
-            for (let i = 0; i < 9; i++) {
-                const emoji =
-                    document.createElement("span");
+            emoji.className = "touch-emoji";
+            emoji.textContent =
+                emojis[Math.floor(Math.random() * emojis.length)];
 
-                emoji.className = "click-emoji";
+            emoji.style.left = x + "px";
+            emoji.style.top = y + "px";
 
+            emoji.style.setProperty(
+                "--move-x",
+                Math.floor(Math.random() * 80 - 40) + "px"
+            );
+
+            emoji.style.setProperty(
+                "--rotate",
+                Math.floor(Math.random() * 120 - 60) + "deg"
+            );
+
+            document.body.appendChild(emoji);
+
+            setTimeout(function () {
+                emoji.remove();
+            }, 850);
+        }
+
+        /* 누른 위치에 이모지 표시 */
+        document.addEventListener("pointerdown", function (event) {
+            if (intro.classList.contains("hide")) {
+                createTouchEmoji(event.clientX, event.clientY);
+            }
+        });
+
+        /* 손가락이나 마우스를 움직일 때 이모지 표시 */
+        let lastMoveTime = 0;
+
+        document.addEventListener("pointermove", function (event) {
+            const currentTime = Date.now();
+
+            if (
+                currentTime - lastMoveTime > 110 &&
+                intro.classList.contains("hide")
+            ) {
+                createTouchEmoji(event.clientX, event.clientY);
+                lastMoveTime = currentTime;
+            }
+        });
+
+        /* 이모지 비 */
+        function startEmojiRain() {
+            emojiRain.innerHTML = "";
+            emojiRain.classList.add("show");
+
+            for (let i = 0; i < 50; i++) {
+                const emoji = document.createElement("span");
+
+                emoji.className = "rain-emoji";
                 emoji.textContent =
                     emojis[Math.floor(Math.random() * emojis.length)];
 
-                emoji.style.left = event.clientX + "px";
-                emoji.style.top = event.clientY + "px";
+                emoji.style.left = Math.random() * 100 + "vw";
 
-                const moveX =
-                    Math.floor(Math.random() * 180 - 90) + "px";
+                emoji.style.fontSize =
+                    Math.floor(Math.random() * 25 + 23) + "px";
 
-                const moveY =
-                    Math.floor(Math.random() * -150 - 30) + "px";
+                emoji.style.setProperty(
+                    "--fall-time",
+                    (Math.random() * 0.7 + 0.8) + "s"
+                );
 
-                const rotate =
-                    Math.floor(Math.random() * 180 - 90) + "deg";
+                emoji.style.setProperty(
+                    "--fall-delay",
+                    (Math.random() * 0.4) + "s"
+                );
 
-                emoji.style.setProperty("--move-x", moveX);
-                emoji.style.setProperty("--move-y", moveY);
-                emoji.style.setProperty("--rotate", rotate);
+                emoji.style.setProperty(
+                    "--fall-rotate",
+                    Math.floor(Math.random() * 720 - 360) + "deg"
+                );
 
-                document.body.appendChild(emoji);
-
-                setTimeout(function () {
-                    emoji.remove();
-                }, 900);
+                emojiRain.appendChild(emoji);
             }
+        }
 
-            /* 이모지 효과를 보여준 뒤 공연 정보로 이동 */
+        /* 포스터를 누르면 이모지가 쏟아진 뒤 이동 */
+        posterLink.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            startEmojiRain();
+
             setTimeout(function () {
-                window.location.href = destination;
-            }, 750);
+                window.location.href = "concert.html";
+            }, 1350);
         });
     </script>
 
