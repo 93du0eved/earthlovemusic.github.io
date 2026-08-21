@@ -19,53 +19,47 @@
 
         body {
             min-height: 100vh;
-            padding: 50px 20px;
+            padding: 60px 24px;
 
-            background-color: #dceffc;
-            color: #162878;
+            background-color: #fff;
+            color: #111;
             font-family: Arial, sans-serif;
         }
 
-        /* 공연 정보 전체 카드 */
         .concert-info {
             width: 100%;
             max-width: 720px;
             margin: 0 auto;
-            padding: 55px 45px;
-
-            background-color: #fff;
-            border: 3px solid #162878;
-            box-shadow: 12px 12px 0 #162878;
         }
 
         /* 상단 제목 */
         .page-header {
-            margin-bottom: 55px;
+            margin-bottom: 60px;
             text-align: center;
         }
 
         .sub-title {
             margin: 0 0 12px;
 
-            color: #162878;
+            color: #111;
             font-size: 14px;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: 5px;
         }
 
         h1 {
             margin: 0;
 
-            color: #162878;
-            font-size: clamp(36px, 8vw, 65px);
+            color: #111;
+            font-size: clamp(36px, 8vw, 64px);
             font-weight: 900;
             letter-spacing: -4px;
             line-height: 1.1;
         }
 
-        /* 정보 목록 */
+        /* 공연 정보 */
         .info-list {
-            border-top: 2px solid #162878;
+            border-top: 1px solid #111;
         }
 
         .info-item {
@@ -75,15 +69,15 @@
             align-items: center;
 
             min-height: 100px;
-            padding: 24px 5px;
+            padding: 25px 5px;
 
-            border-bottom: 2px solid #162878;
+            border-bottom: 1px solid #111;
         }
 
         .label {
-            color: #162878;
-            font-size: 15px;
-            font-weight: 900;
+            color: #111;
+            font-size: 14px;
+            font-weight: 800;
             letter-spacing: 2px;
         }
 
@@ -91,13 +85,13 @@
             margin: 0;
 
             color: #111;
-            font-size: clamp(17px, 4vw, 22px);
-            font-weight: 600;
+            font-size: clamp(17px, 4vw, 21px);
+            font-weight: 500;
             line-height: 1.5;
             word-break: keep-all;
         }
 
-        /* 출연진 영역 */
+        /* 출연진 */
         .cast-item {
             align-items: start;
         }
@@ -109,17 +103,16 @@
         .cast-list {
             display: flex;
             flex-direction: column;
-            gap: 26px;
+            gap: 25px;
         }
 
         .cast-team strong {
-            display: inline-block;
+            display: block;
             margin-bottom: 8px;
 
-            color: #162878;
+            color: #111;
             font-size: 17px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
+            font-weight: 800;
         }
 
         .cast-team p {
@@ -127,28 +120,23 @@
 
             color: #111;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1.7;
             word-break: keep-all;
         }
 
-        /* 휴대폰 화면 */
+        /* 모바일 화면 */
         @media (max-width: 600px) {
             body {
-                padding: 25px 16px 40px;
-            }
-
-            .concert-info {
-                padding: 42px 24px;
-                border-width: 2px;
-                box-shadow: 7px 7px 0 #162878;
+                padding: 45px 22px;
             }
 
             .page-header {
-                margin-bottom: 40px;
+                margin-bottom: 45px;
             }
 
             .sub-title {
+                font-size: 12px;
                 letter-spacing: 4px;
             }
 
@@ -157,14 +145,15 @@
             }
 
             .info-item {
-                grid-template-columns: 74px minmax(0, 1fr);
-                gap: 13px;
+                grid-template-columns: 90px minmax(0, 1fr);
+                gap: 12px;
                 min-height: 90px;
                 padding: 22px 0;
             }
 
             .label {
-                font-size: 13px;
+                font-size: 12px;
+                letter-spacing: 1px;
             }
 
             .cast-team strong {
@@ -195,13 +184,13 @@
             </div>
 
             <div class="info-item">
-                <span class="label">PLACE</span>
+                <span class="label">LOCATION</span>
                 <p class="value">창의실습지원센터 앞 잔디마당</p>
             </div>
 
             <div class="info-item">
                 <span class="label">TIME</span>
-                <p class="value">15시</p>
+                <p class="value">15:00</p>
             </div>
 
             <div class="info-item cast-item">
@@ -224,10 +213,6 @@
 
         </section>
 
-    </main>
-
-</body>
-</html>
     </main>
 
 </body>
