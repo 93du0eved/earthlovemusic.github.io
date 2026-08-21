@@ -52,7 +52,7 @@
             visibility: hidden;
         }
 
-        /* 제목과 포스터를 담는 전체 영역 */
+        /* 전체 포스터 페이지 */
         #posterPage {
             width: 100%;
             min-height: 100vh;
@@ -65,10 +65,10 @@
             opacity: 1;
         }
 
-        /* 포스터 위 흰색 제목 영역 */
+        /* 제목 영역 */
         .poster-header {
             width: 100%;
-            padding: 35px 20px 28px;
+            padding: 35px 20px 20px;
 
             background-color: #fff;
             text-align: center;
@@ -81,6 +81,30 @@
             font-size: clamp(27px, 8vw, 48px);
             font-weight: 800;
             letter-spacing: -2px;
+        }
+
+        /* 클릭 안내 문구 */
+        .click-message {
+            margin: 12px 0 0;
+
+            color: #222;
+            font-size: clamp(15px, 4vw, 20px);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+
+            animation: messageBlink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes messageBlink {
+            0%, 100% {
+                opacity: 0.45;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(3px);
+            }
         }
 
         /* 포스터 영역 */
@@ -103,9 +127,49 @@
             width: 100%;
             height: auto;
             cursor: pointer;
+
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* 컴퓨터 화면에서는 포스터 주변에 약간의 그림자 */
+        /* 클릭했을 때 나타나는 이모지 */
+        .click-emoji {
+            position: fixed;
+            z-index: 200;
+
+            font-size: 30px;
+            line-height: 1;
+
+            pointer-events: none;
+            user-select: none;
+
+            animation: emojiPop 0.9s ease-out forwards;
+        }
+
+        @keyframes emojiPop {
+            0% {
+                opacity: 1;
+                transform:
+                    translate(-50%, -50%)
+                    scale(0.4)
+                    rotate(0deg);
+            }
+
+            60% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform:
+                    translate(
+                        calc(-50% + var(--move-x)),
+                        calc(-50% + var(--move-y))
+                    )
+                    scale(1.6)
+                    rotate(var(--rotate));
+            }
+        }
+
         @media (min-width: 700px) {
             #poster {
                 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.14);
@@ -123,15 +187,15 @@
     <!-- 처음 보이는 문구 -->
     <div id="intro">you found me!</div>
 
-    <!-- 인트로 뒤에 나타나는 페이지 -->
+    <!-- 인트로가 끝난 후 나타나는 페이지 -->
     <main id="posterPage">
 
         <header class="poster-header">
             <h1>지구사랑음악</h1>
+            <p class="click-message">Click this poster! ↓</p>
         </header>
 
         <section class="poster-area">
-            <!-- 포스터를 누르면 공연 정보로 이동 -->
             <a id="posterLink" href="concert.html">
                 <img id="poster" alt="지구사랑음악 공연 포스터">
             </a>
@@ -148,15 +212,26 @@
             "poster5.png"
         ];
 
-        const randomIndex = Math.floor(Math.random() * posters.length);
-        const randomPoster = posters[randomIndex];
+        const emojis = ["🌎", "🎵", "🩵"];
 
-        const intro = document.getElementById("intro");
-        const posterPage = document.getElementById("posterPage");
-        const poster = document.getElementById("poster");
+        const randomIndex =
+            Math.floor(Math.random() * posters.length);
 
-        poster.src = randomPoster;
+        const intro =
+            document.getElementById("intro");
 
+        const posterPage =
+            document.getElementById("posterPage");
+
+        const posterLink =
+            document.getElementById("posterLink");
+
+        const poster =
+            document.getElementById("poster");
+
+        poster.src = posters[randomIndex];
+
+        /* 포스터 로딩 후 인트로 사라짐 */
         poster.addEventListener("load", function () {
             setTimeout(function () {
                 intro.classList.add("hide");
@@ -164,10 +239,54 @@
             }, 1500);
         });
 
-        /* 이미지 오류가 나도 인트로 화면에 멈추지 않도록 설정 */
         poster.addEventListener("error", function () {
             intro.classList.add("hide");
             posterPage.classList.add("show");
+        });
+
+        /* 포스터 클릭 효과 */
+        posterLink.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const destination = posterLink.href;
+
+            /* 클릭 위치 주변에 이모지 9개 생성 */
+            for (let i = 0; i < 9; i++) {
+                const emoji =
+                    document.createElement("span");
+
+                emoji.className = "click-emoji";
+
+                emoji.textContent =
+                    emojis[Math.floor(Math.random() * emojis.length)];
+
+                emoji.style.left = event.clientX + "px";
+                emoji.style.top = event.clientY + "px";
+
+                const moveX =
+                    Math.floor(Math.random() * 180 - 90) + "px";
+
+                const moveY =
+                    Math.floor(Math.random() * -150 - 30) + "px";
+
+                const rotate =
+                    Math.floor(Math.random() * 180 - 90) + "deg";
+
+                emoji.style.setProperty("--move-x", moveX);
+                emoji.style.setProperty("--move-y", moveY);
+                emoji.style.setProperty("--rotate", rotate);
+
+                document.body.appendChild(emoji);
+
+                setTimeout(function () {
+                    emoji.remove();
+                }, 900);
+            }
+
+            /* 이모지 효과를 보여준 뒤 공연 정보로 이동 */
+            setTimeout(function () {
+                window.location.href = destination;
+            }, 750);
         });
     </script>
 
